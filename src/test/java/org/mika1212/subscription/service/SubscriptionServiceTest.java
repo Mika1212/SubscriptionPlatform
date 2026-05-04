@@ -2,14 +2,14 @@ package org.mika1212.subscription.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mika1212.common.json.JacksonJsonSerializer;
 import org.mika1212.subscription.dto.ActivateSubscriptionDTO;
 import org.mika1212.subscription.dto.DeactivateSubscriptionDTO;
-import org.mika1212.subscription.entity.SubscriptionEntity;
-import org.mika1212.subscription.entity.SubscriptionStatus;
-import org.mika1212.subscription.entity.SubscriptionType;
+import org.mika1212.subscription.entity.*;
 import org.mika1212.subscription.exception.SubscriptionActivateDateException;
 import org.mika1212.subscription.exception.SubscriptionAlreadyExistsException;
 import org.mika1212.subscription.exception.SubscriptionNotFoundException;
+import org.mika1212.subscription.repository.OutboxRepository;
 import org.mika1212.subscription.repository.SubscriptionRepository;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -29,6 +29,12 @@ class SubscriptionServiceTest {
     @Mock
     private SubscriptionRepository repository;
 
+    @Mock
+    private OutboxRepository outboxRepository;
+
+    @Mock
+    private JacksonJsonSerializer jsonSerializer;
+
     @InjectMocks
     private SubscriptionService service;
 
@@ -47,14 +53,20 @@ class SubscriptionServiceTest {
         when(repository.findByUserIdAndStatus(userId, SubscriptionStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
+        when(jsonSerializer.toJson(any())).thenReturn("json");
+
         ArgumentCaptor<SubscriptionEntity> captor =
                 ArgumentCaptor.forClass(SubscriptionEntity.class);
+
+        ArgumentCaptor<OutboxEventEntity> outboxCaptor =
+                ArgumentCaptor.forClass(OutboxEventEntity.class);
 
         var response = service.activate(dto);
 
         assertThat(response.status()).isEqualTo("OK");
 
         verify(repository).save(captor.capture());
+        verify(outboxRepository).save(outboxCaptor.capture());
 
         SubscriptionEntity saved = captor.getValue();
 
@@ -62,6 +74,14 @@ class SubscriptionServiceTest {
         assertThat(saved.getType()).isEqualTo(SubscriptionType.BASIC);
         assertThat(saved.getStatus()).isEqualTo(SubscriptionStatus.ACTIVE);
         assertThat(saved.getActivationDate()).isEqualTo(activationDate);
+
+        OutboxEventEntity savedEvent = outboxCaptor.getValue();
+
+        assertThat(savedEvent.getId()).isNotNull();
+        assertThat(savedEvent.getStatus()).isEqualTo(OutboxEventStatus.NEW);
+        assertThat(savedEvent.getEventType()).isEqualTo(OutboxEventType.SUBSCRIPTION_ACTIVATED);
+        assertThat(savedEvent.getPayload()).isEqualTo("json");
+        assertThat(savedEvent.getCreatedAt()).isNotNull();
     }
 
     @Test
@@ -105,23 +125,38 @@ class SubscriptionServiceTest {
         when(repository.findByUserIdAndStatus(userId, SubscriptionStatus.ACTIVE))
                 .thenReturn(Optional.of(entity));
 
+        when(jsonSerializer.toJson(any())).thenReturn("json");
+
         DeactivateSubscriptionDTO dto =
                 new DeactivateSubscriptionDTO(userId, SubscriptionType.BASIC);
 
         ArgumentCaptor<SubscriptionEntity> captor =
                 ArgumentCaptor.forClass(SubscriptionEntity.class);
 
+        ArgumentCaptor<OutboxEventEntity> outboxCaptor =
+                ArgumentCaptor.forClass(OutboxEventEntity.class);
+
         var response = service.deactivate(dto);
 
         assertThat(response.status()).isEqualTo("OK");
 
         verify(repository).save(captor.capture());
+        verify(outboxRepository).save(outboxCaptor.capture());
 
         SubscriptionEntity saved = captor.getValue();
 
-        assertThat(saved.getStatus()).isEqualTo(SubscriptionStatus.INACTIVE);
         LocalDate today = LocalDate.now();
+        assertThat(saved.getStatus()).isEqualTo(SubscriptionStatus.INACTIVE);
         assertThat(saved.getDeactivationDate()).isEqualTo(today);
+
+        OutboxEventEntity savedEvent = outboxCaptor.getValue();
+
+        assertThat(savedEvent.getId()).isNotNull();
+        assertThat(savedEvent.getStatus()).isEqualTo(OutboxEventStatus.NEW);
+        assertThat(savedEvent.getEventType()).isEqualTo(OutboxEventType.SUBSCRIPTION_DEACTIVATED);
+        assertThat(savedEvent.getPayload()).isEqualTo("json");
+        assertThat(savedEvent.getCreatedAt()).isNotNull();
+        assertThat(savedEvent.getRetryCount()).isEqualTo(0);
     }
 
     @Test

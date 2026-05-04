@@ -2,6 +2,8 @@ package org.mika1212.subscription.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -21,6 +23,7 @@ public class OutboxEventEntity {
     @Enumerated(EnumType.STRING)
     private OutboxEventType eventType;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private String payload;
 

@@ -19,8 +19,7 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity
     WHERE status = 'ACTIVE'
     AND next_billing_date <= :today
     ORDER BY next_billing_date, id
-    FOR UPDATE SKIP LOCKED
     LIMIT :limit
     """, nativeQuery = true)
-    List<SubscriptionEntity> lockBatch(LocalDate today, int limit);
+    List<SubscriptionEntity> claimBatch(LocalDate today, int limit);
 }

@@ -55,6 +55,7 @@ public class SubscriptionService {
                         .eventType(OutboxEventType.SUBSCRIPTION_ACTIVATED)
                         .payload(jsonSerializer.toJson(event))
                         .status(OutboxEventStatus.NEW)
+                        .retryCount(0)
                         .createdAt(Instant.now())
                         .build()
         );

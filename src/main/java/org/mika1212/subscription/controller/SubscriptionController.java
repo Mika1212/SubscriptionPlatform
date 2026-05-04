@@ -14,22 +14,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
-    private final ModelMapper modelMapper;
 
     public SubscriptionController(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
-        this.modelMapper = new ModelMapper();
     }
 
     @PostMapping("/activate")
     public ActivateSubscriptionResponse activate(@RequestBody @Valid ActivateSubscriptionRequest request) {
-        ActivateSubscriptionDTO activateSubscriptionDto = modelMapper.map(request, ActivateSubscriptionDTO.class);
-        return subscriptionService.activate(activateSubscriptionDto);
+
+        ActivateSubscriptionDTO dto = new ActivateSubscriptionDTO(
+                request.userId(),
+                request.type(),
+                request.activationDate()
+        );
+        return subscriptionService.activate(dto);
     }
 
     @PostMapping("/deactivate")
     public DeactivateSubscriptionResponse deactivate(@RequestBody @Valid DeactivateSubscriptionRequest request) {
-        DeactivateSubscriptionDTO deactivateSubscriptionDto = modelMapper.map(request, DeactivateSubscriptionDTO.class);
-        return subscriptionService.deactivate(deactivateSubscriptionDto);
+
+        DeactivateSubscriptionDTO dto = new DeactivateSubscriptionDTO(
+                request.userId(),
+                request.type()
+        );
+        return subscriptionService.deactivate(dto);
     }
 }

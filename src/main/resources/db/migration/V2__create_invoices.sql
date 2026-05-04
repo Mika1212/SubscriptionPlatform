@@ -5,7 +5,8 @@ CREATE TABLE invoices (
                           subscription_type VARCHAR(10) NOT NULL,
                           amount NUMERIC(10, 2) NOT NULL,
                           billing_date DATE NOT NULL,
-                          created_at TIMESTAMP NOT NULL
+                          created_at TIMESTAMP NOT NULL,
+                          updated_at TIMESTAMP NOT NULL
 );
 
 CREATE INDEX idx_invoices_user_id ON invoices(user_id);

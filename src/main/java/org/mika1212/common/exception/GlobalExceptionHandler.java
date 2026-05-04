@@ -4,13 +4,40 @@ import org.mika1212.subscription.exception.SubscriptionActivateDateException;
 import org.mika1212.subscription.exception.SubscriptionAlreadyExistsException;
 import org.mika1212.subscription.exception.SubscriptionNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    ///  TODO выводить структурированное сообщение об ошибках
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
+
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "message", ex.getMessage(),
+                        "error", "BAD_REQUEST"
+                )
+        );
+    }
+
+    ///  TODO выводить структурированное сообщение об ошибках
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleJsonParse(HttpMessageNotReadableException ex) {
+
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "message", ex.getMessage(),
+                        "error", "BAD_REQUEST"
+                )
+        );
+    }
 
     @ExceptionHandler(SubscriptionAlreadyExistsException.class)
     public ResponseEntity<ApiErrorResponse> handleAlreadyExists(SubscriptionAlreadyExistsException ex) {

@@ -1,11 +1,11 @@
 package org.mika1212.subscription.service;
 
 import org.mika1212.subscription.entity.SubscriptionEntity;
+import org.mika1212.subscription.entity.SubscriptionStatus;
 import org.mika1212.subscription.repository.SubscriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,11 +31,11 @@ public class BatchingService {
         this.billingExecutor = billingExecutor;
     }
 
-    @Transactional
     public List<SubscriptionEntity> processBatch(LocalDate today, int batchSize) {
 
         List<SubscriptionEntity> batch =
-                subscriptionRepository.lockBatch(today, batchSize);
+                subscriptionRepository.claimBatch(today, batchSize);
+        batch.forEach(subscription -> { subscription.setStatus(SubscriptionStatus.IN_PROGRESS);});
 
         log.info("Locked batch size={}", batch.size());
 
