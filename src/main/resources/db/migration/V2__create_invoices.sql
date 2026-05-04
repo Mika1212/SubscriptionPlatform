@@ -3,7 +3,7 @@ CREATE TABLE invoices (
                           user_id UUID NOT NULL,
                           subscription_id UUID NOT NULL,
                           subscription_type VARCHAR(10) NOT NULL,
-                          amount INT NOT NULL,
+                          amount NUMERIC(10, 2) NOT NULL,
                           billing_date DATE NOT NULL,
                           created_at TIMESTAMP NOT NULL
 );

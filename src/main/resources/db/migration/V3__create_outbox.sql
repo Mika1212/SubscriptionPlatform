@@ -3,6 +3,7 @@ CREATE TABLE outbox_events (
                                event_type VARCHAR(50) NOT NULL,
                                payload JSONB NOT NULL,
                                status VARCHAR(10) NOT NULL,
+                               retry_count INT NOT NULL DEFAULT 0,
                                created_at TIMESTAMP NOT NULL
 );
 

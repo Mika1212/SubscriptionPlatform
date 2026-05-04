@@ -27,5 +27,7 @@ public class OutboxEventEntity {
     @Enumerated(EnumType.STRING)
     private OutboxEventStatus status;
 
+    private int retryCount;
+
     private Instant createdAt;
 }
