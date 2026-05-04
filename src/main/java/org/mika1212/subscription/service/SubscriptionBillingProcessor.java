@@ -74,6 +74,8 @@ public class SubscriptionBillingProcessor {
                         sub.getBillingDayOfMonth()
                 )
         );
+
+        subscriptionRepository.save(sub);
     }
 
     private LocalDate calculateNextBillingDate(LocalDate from, int billingDayOfMonth) {
