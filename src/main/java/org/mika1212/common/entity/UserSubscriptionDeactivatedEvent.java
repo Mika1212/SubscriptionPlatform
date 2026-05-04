@@ -4,5 +4,6 @@ import java.util.UUID;
 
 public record UserSubscriptionDeactivatedEvent(
         UUID userId,
+        UUID subscriptionId,
         SubscriptionType type
 ) {}

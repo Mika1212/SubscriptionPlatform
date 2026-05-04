@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record SubscriptionView(
         UUID userId,
+        UUID subscriptionId,
         SubscriptionType type,
         LocalDate activationDate,
         SubscriptionStatus status

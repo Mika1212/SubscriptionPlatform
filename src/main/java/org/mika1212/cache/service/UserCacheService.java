@@ -1,5 +1,6 @@
 package org.mika1212.cache.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.mika1212.cache.entity.InvoiceView;
 import org.mika1212.cache.entity.SubscriptionView;
 import org.mika1212.cache.entity.UserCacheDto;
@@ -9,11 +10,13 @@ import org.mika1212.common.json.JacksonJsonSerializer;
 import org.mika1212.common.entity.InvoiceCreatedEvent;
 import org.mika1212.common.entity.UserSubscriptionActivatedEvent;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class UserCacheService {
 
@@ -32,9 +35,14 @@ public class UserCacheService {
 
         UserCacheDto cache = getOrCreate(key);
 
+        cache.getSubscriptions().removeIf(s ->
+                s.subscriptionId().equals(event.subscriptionId())
+        );
+
         cache.getSubscriptions().add(
                 new SubscriptionView(
                         event.userId(),
+                        event.subscriptionId(),
                         event.type(),
                         event.activationDate(),
                         SubscriptionStatus.ACTIVE
@@ -65,6 +73,10 @@ public class UserCacheService {
 
         UserCacheDto cache = getOrCreate(key);
 
+        cache.getInvoices().removeIf(i ->
+                i.invoiceId().equals(event.invoiceId())
+        );
+
         cache.getInvoices().add(
                 new InvoiceView(
                         event.invoiceId(),
@@ -82,15 +94,26 @@ public class UserCacheService {
 
     private UserCacheDto getOrCreate(String key) {
 
-        String raw = redisTemplate.opsForValue().get(key);
+        try {
+            String raw = redisTemplate.opsForValue().get(key);
 
-        if (raw == null) {
-            return new UserCacheDto(new ArrayList<>(), new ArrayList<>());
+            if (raw == null) {
+                return new UserCacheDto();
+            }
+
+            return serializer.toObject(raw, UserCacheDto.class);
+
+        } catch (Exception e) {
+            log.warn("Redis unavailable, returning empty cache, key={}", key, e);
+            return new UserCacheDto();
         }
-
-        return serializer.toObject(raw, UserCacheDto.class);
     }
 
+    @Retryable(
+            value = Exception.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 200)
+    )
     private void save(String key, UserCacheDto cache) {
         redisTemplate.opsForValue().set(key, serializer.toJson(cache));
     }

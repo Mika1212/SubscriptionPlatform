@@ -49,6 +49,7 @@ public class SubscriptionService {
 
         UserSubscriptionActivatedEvent event = new UserSubscriptionActivatedEvent(
                 entity.getUserId(),
+                entity.getId(),
                 entity.getType(),
                 entity.getActivationDate()
         );
@@ -81,6 +82,7 @@ public class SubscriptionService {
         UserSubscriptionDeactivatedEvent event =
                 new UserSubscriptionDeactivatedEvent(
                         subscription.getUserId(),
+                        subscription.getId(),
                         subscription.getType()
                 );
 
