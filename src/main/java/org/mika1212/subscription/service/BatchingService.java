@@ -1,7 +1,7 @@
 package org.mika1212.subscription.service;
 
-import org.mika1212.subscription.entity.SubscriptionEntity;
-import org.mika1212.subscription.entity.SubscriptionStatus;
+import org.mika1212.common.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionStatus;
 import org.mika1212.subscription.repository.SubscriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

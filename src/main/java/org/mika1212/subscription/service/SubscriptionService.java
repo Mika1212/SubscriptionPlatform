@@ -1,5 +1,9 @@
 package org.mika1212.subscription.service;
 
+import org.mika1212.common.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionStatus;
+import org.mika1212.common.entity.UserSubscriptionActivatedEvent;
+import org.mika1212.common.entity.UserSubscriptionDeactivatedEvent;
 import org.mika1212.common.json.JacksonJsonSerializer;
 import org.mika1212.subscription.dto.*;
 import org.mika1212.subscription.exception.SubscriptionActivateDateException;

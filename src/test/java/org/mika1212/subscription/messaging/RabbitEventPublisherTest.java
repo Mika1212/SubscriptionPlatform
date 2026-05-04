@@ -49,7 +49,7 @@ class RabbitEventPublisherTest {
         publisher.publish(OutboxEventType.SUBSCRIPTION_DEACTIVATED, "payload");
 
         verify(rabbitTemplate).convertAndSend(
-                RabbitConfig.SUBSCRIPTION_QUEUE,
+                RabbitConfig.UNSUBSCRIPTION_QUEUE,
                 "payload"
         );
     }

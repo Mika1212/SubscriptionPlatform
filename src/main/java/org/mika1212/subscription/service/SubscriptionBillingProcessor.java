@@ -1,8 +1,8 @@
 package org.mika1212.subscription.service;
 
+import org.mika1212.common.entity.*;
 import org.mika1212.common.json.JacksonJsonSerializer;
 import org.mika1212.subscription.properties.SubscriptionPriceProperties;
-import org.mika1212.subscription.dto.InvoiceCreatedEvent;
 import org.mika1212.subscription.entity.*;
 import org.mika1212.subscription.repository.InvoiceRepository;
 import org.mika1212.subscription.repository.OutboxRepository;

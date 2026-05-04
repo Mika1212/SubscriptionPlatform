@@ -1,6 +1,6 @@
 package org.mika1212.subscription.service;
 
-import org.mika1212.subscription.entity.*;
+import org.mika1212.common.entity.SubscriptionEntity;
 import org.mika1212.subscription.properties.BillingProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

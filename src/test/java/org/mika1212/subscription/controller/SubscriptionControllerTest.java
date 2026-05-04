@@ -2,7 +2,7 @@ package org.mika1212.subscription.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mika1212.subscription.dto.*;
-import org.mika1212.subscription.entity.SubscriptionType;
+import org.mika1212.common.entity.SubscriptionType;
 import org.mika1212.subscription.service.SubscriptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

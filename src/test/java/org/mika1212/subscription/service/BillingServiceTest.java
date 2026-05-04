@@ -2,13 +2,12 @@ package org.mika1212.subscription.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mika1212.subscription.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionEntity;
 import org.mika1212.subscription.properties.BillingProperties;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;

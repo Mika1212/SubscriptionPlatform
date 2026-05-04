@@ -3,7 +3,7 @@ package org.mika1212.subscription.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mika1212.subscription.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionEntity;
 import org.mika1212.subscription.repository.SubscriptionRepository;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
