@@ -11,6 +11,7 @@ import org.mika1212.common.entity.InvoiceCreatedEvent;
 import org.mika1212.common.entity.UserSubscriptionActivatedEvent;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
@@ -58,11 +59,9 @@ public class UserCacheService {
 
         UserCacheDto cache = getOrCreate(key);
 
-        cache.getSubscriptions().forEach(sub -> {
-            if (sub.type() == event.type()) {
-                cache.getSubscriptions().remove(sub);
-            }
-        });
+        cache.getSubscriptions().removeIf(sub ->
+                sub.type() == event.type()
+        );
 
         save(key, cache);
     }
@@ -88,6 +87,25 @@ public class UserCacheService {
         save(key, cache);
     }
 
+    public UserCacheDto getUserCache(UUID userId) {
+
+        String key = key(userId);
+
+        try {
+            String raw = redisTemplate.opsForValue().get(key);
+
+            if (raw == null) {
+                return new UserCacheDto();
+            }
+
+            return serializer.toObject(raw, UserCacheDto.class);
+
+        } catch (Exception e) {
+            log.warn("Redis unavailable, returning empty cache, userId={}", userId, e);
+            return new UserCacheDto();
+        }
+    }
+
     private String key(UUID userId) {
         return "user:" + userId;
     }
@@ -111,10 +129,15 @@ public class UserCacheService {
 
     @Retryable(
             value = Exception.class,
-            maxAttempts = 3,
+            maxAttempts = 4,
             backoff = @Backoff(delay = 200)
     )
     private void save(String key, UserCacheDto cache) {
         redisTemplate.opsForValue().set(key, serializer.toJson(cache));
+    }
+
+    @Recover
+    private void recover(Exception e, String key, UserCacheDto cache) {
+        log.error("Failed to save cache after retries, key={}", key, e);
     }
 }
