@@ -1,5 +1,6 @@
 package org.mika1212.subscription.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.mika1212.common.entity.SubscriptionEntity;
 import org.mika1212.common.entity.SubscriptionStatus;
 import org.mika1212.subscription.repository.SubscriptionRepository;
@@ -13,10 +14,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class BatchingService {
 
-    private static final Logger log = LoggerFactory.getLogger(BatchingService.class);
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionBillingProcessor processor;
     private final Executor billingExecutor;

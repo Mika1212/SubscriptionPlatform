@@ -33,6 +33,7 @@ public class UserEventConsumer {
 
         } catch (Exception e) {
             log.error("Failed to process subscription activated event", e);
+            // TODO: отправить сообщение в DLQ
         }
     }
 
@@ -46,6 +47,7 @@ public class UserEventConsumer {
 
         } catch (Exception e) {
             log.error("Failed to process subscription deactivated event", e);
+            // TODO: отправить сообщение в DLQ
         }
     }
 
@@ -59,6 +61,7 @@ public class UserEventConsumer {
 
         } catch (Exception e) {
             log.error("Failed to process invoice event", e);
+            // TODO: отправить сообщение в DLQ
         }
     }
 }

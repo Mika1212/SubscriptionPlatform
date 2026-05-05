@@ -39,7 +39,7 @@ public class OutboxProcessor {
                 if (event.getRetryCount() < 5) {
                     event.setStatus(OutboxEventStatus.NEW);
                 } else {
-                    // TODO dead letter queue
+                    // TODO: отправить сообщение в DLQ
                     event.setStatus(OutboxEventStatus.FAILED);
                 }
 

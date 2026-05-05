@@ -15,12 +15,15 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.util.Comparator;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class UserCacheService {
 
+    private static final long TTL_SECONDS = 3600;
     private final StringRedisTemplate redisTemplate;
     private final JacksonJsonSerializer serializer;
 
@@ -38,6 +41,7 @@ public class UserCacheService {
 
         cache.getSubscriptions().removeIf(s ->
                 s.subscriptionId().equals(event.subscriptionId())
+                        || (s.type() == event.type() && s.userId().equals(event.userId()))
         );
 
         cache.getSubscriptions().add(
@@ -50,6 +54,9 @@ public class UserCacheService {
                 )
         );
 
+        log.info("Activate event: userId={}, subscriptionId={}, type={}",
+                event.userId(), event.subscriptionId(), event.type());
+
         save(key, cache);
     }
 
@@ -59,9 +66,18 @@ public class UserCacheService {
 
         UserCacheDto cache = getOrCreate(key);
 
-        cache.getSubscriptions().removeIf(sub ->
-                sub.type() == event.type()
+        boolean removed = cache.getSubscriptions().removeIf(sub ->
+                sub.subscriptionId().equals(event.subscriptionId())
         );
+
+        if (!removed) {
+            cache.getSubscriptions().removeIf(sub ->
+                    sub.type() == event.type()
+            );
+        }
+
+        log.info("Deactivate event: userId={}, subscriptionId={}, type={}",
+                event.userId(), event.subscriptionId(), event.type());
 
         save(key, cache);
     }
@@ -82,6 +98,10 @@ public class UserCacheService {
                         event.amount(),
                         event.billingDate()
                 )
+        );
+
+        cache.getInvoices().sort(
+                Comparator.comparing(InvoiceView::billingDate).reversed()
         );
 
         save(key, cache);
@@ -133,11 +153,16 @@ public class UserCacheService {
             backoff = @Backoff(delay = 200)
     )
     private void save(String key, UserCacheDto cache) {
-        redisTemplate.opsForValue().set(key, serializer.toJson(cache));
+        redisTemplate.opsForValue().set(
+                key,
+                serializer.toJson(cache),
+                Duration.ofSeconds(TTL_SECONDS)
+        );
     }
 
     @Recover
     private void recover(Exception e, String key, UserCacheDto cache) {
         log.error("Failed to save cache after retries, key={}", key, e);
+        // TODO: отправить сообщение в DLQ
     }
 }

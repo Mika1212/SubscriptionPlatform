@@ -93,6 +93,10 @@ public class SubscriptionBillingProcessor {
     }
 
     private InvoiceEntity buildInvoiceEntity(SubscriptionEntity sub, BigDecimal amount, LocalDate billingDate) {
+        if (invoiceRepository.existsByUserIdAndBillingDate(sub.getUserId(), billingDate)) {
+            return invoiceRepository.findByUserIdAndBillingDate(sub.getUserId(), billingDate);
+        }
+
         InvoiceEntity invoice = new InvoiceEntity();
         invoice.setId(UUID.randomUUID());
         invoice.setUserId(sub.getUserId());

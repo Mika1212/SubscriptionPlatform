@@ -1,12 +1,15 @@
 package org.mika1212.common.exception;
 
+import org.mika1212.cache.exception.BadRequestException;
 import org.mika1212.subscription.exception.SubscriptionActivateDateException;
 import org.mika1212.subscription.exception.SubscriptionAlreadyExistsException;
 import org.mika1212.subscription.exception.SubscriptionNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
@@ -36,6 +39,15 @@ public class GlobalExceptionHandler {
                         "message", ex.getMessage(),
                         "error", "BAD_REQUEST"
                 )
+        );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleIllegalArgument(BadRequestException e) {
+        return Map.of(
+                "error", "VALIDATION_ERROR",
+                "message", e.getMessage()
         );
     }
 

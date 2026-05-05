@@ -20,7 +20,7 @@ public class RabbitEventPublisher implements EventPublisher {
         String queue = switch (type) {
             case INVOICE_CREATED -> RabbitConfig.INVOICE_QUEUE;
             case SUBSCRIPTION_ACTIVATED -> RabbitConfig.SUBSCRIPTION_QUEUE;
-            case  SUBSCRIPTION_DEACTIVATED -> RabbitConfig.UNSUBSCRIPTION_QUEUE;
+            case SUBSCRIPTION_DEACTIVATED -> RabbitConfig.UNSUBSCRIPTION_QUEUE;
         };
 
         rabbitTemplate.convertAndSend(queue, message);
