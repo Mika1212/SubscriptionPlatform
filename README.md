@@ -64,12 +64,10 @@ size: 1–100
 subscriptions
 invoices (пагинация)
 totalInvoices
-Архитектура
-Поток данных
-сервис подписок пишет события в outbox
-scheduler отправляет события в RabbitMQ
-consumer обновляет Redis кеш
-Очереди RabbitMQ
+```
+
+### Очереди RabbitMQ
+```
 subscription.queue — активация подписки
 unsubscription.queue — деактивация
 invoice.queue — создание инвойса
