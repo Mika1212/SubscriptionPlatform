@@ -14,7 +14,9 @@ public class BillingScheduler {
         this.billingService = billingService;
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    // PROD: запуск 1 раз в день в 00:00
+    // TEST: можно уменьшить интервал до 10 секунд для проверки
+    @Scheduled(cron = "*/10 * * * * *")
     @SchedulerLock(name = "billingJob")
     public void runBilling() {
         billingService.generateInvoices();

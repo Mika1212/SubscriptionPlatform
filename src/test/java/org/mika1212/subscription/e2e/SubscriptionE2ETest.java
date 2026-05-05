@@ -1,6 +1,8 @@
 package org.mika1212.subscription.e2e;
 
 import org.junit.jupiter.api.Test;
+import org.mika1212.common.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionStatus;
 import org.mika1212.subscription.entity.*;
 import org.mika1212.subscription.repository.OutboxRepository;
 import org.mika1212.subscription.repository.SubscriptionRepository;

@@ -9,6 +9,7 @@ public class RabbitConfig {
 
     public static final String INVOICE_QUEUE = "invoice.queue";
     public static final String SUBSCRIPTION_QUEUE = "subscription.queue";
+    public static final String UNSUBSCRIPTION_QUEUE = "unsubscription.queue";
 
     @Bean
     public Queue invoiceQueue() {
@@ -18,5 +19,10 @@ public class RabbitConfig {
     @Bean
     public Queue subscriptionQueue() {
         return new Queue(SUBSCRIPTION_QUEUE, true);
+    }
+
+    @Bean
+    public Queue unsubscriptionQueue() {
+        return new Queue(UNSUBSCRIPTION_QUEUE, true);
     }
 }

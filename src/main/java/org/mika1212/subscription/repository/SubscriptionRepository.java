@@ -1,8 +1,8 @@
 package org.mika1212.subscription.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.mika1212.subscription.entity.SubscriptionEntity;
-import org.mika1212.subscription.entity.SubscriptionStatus;
+import org.mika1212.common.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionStatus;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package org.mika1212.subscription.dto;
+package org.mika1212.common.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

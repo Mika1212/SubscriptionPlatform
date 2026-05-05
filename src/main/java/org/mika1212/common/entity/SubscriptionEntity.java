@@ -1,4 +1,4 @@
-package org.mika1212.subscription.entity;
+package org.mika1212.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

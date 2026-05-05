@@ -2,6 +2,9 @@ package org.mika1212.subscription.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mika1212.common.entity.SubscriptionEntity;
+import org.mika1212.common.entity.SubscriptionStatus;
+import org.mika1212.common.entity.SubscriptionType;
 import org.mika1212.common.json.JacksonJsonSerializer;
 import org.mika1212.subscription.dto.ActivateSubscriptionDTO;
 import org.mika1212.subscription.dto.DeactivateSubscriptionDTO;

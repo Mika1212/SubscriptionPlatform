@@ -1,11 +1,9 @@
-package org.mika1212.subscription.dto;
+package org.mika1212.common.entity;
 
-import org.mika1212.subscription.entity.SubscriptionType;
-
-import java.time.LocalDate;
 import java.util.UUID;
 
 public record UserSubscriptionDeactivatedEvent(
         UUID userId,
+        UUID subscriptionId,
         SubscriptionType type
 ) {}

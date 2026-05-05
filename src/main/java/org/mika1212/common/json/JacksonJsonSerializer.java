@@ -21,4 +21,13 @@ public class JacksonJsonSerializer implements JsonSerializer {
             throw new IllegalStateException("Failed to serialize object to JSON", e);
         }
     }
+
+    @Override
+    public <T> T toObject(String json, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Failed to serialize object to JSON", e);
+        }
+    }
 }
